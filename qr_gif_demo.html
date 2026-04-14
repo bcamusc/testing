@@ -1,0 +1,397 @@
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;background:#0f0f1a;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:1.5rem}
+.scene{display:flex;align-items:center;gap:40px;max-width:760px;width:100%}
+
+/* Phone */
+.phone-wrap{flex-shrink:0}
+.phone-frame{background:#1a1a2e;border-radius:40px;padding:12px;box-shadow:0 0 0 2px #2a2a3e,0 20px 50px rgba(0,0,0,.6);width:230px}
+.phone-screen{border-radius:28px;overflow:hidden;background:#f4f6fa;position:relative;height:460px}
+.phone-notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:90px;height:22px;background:#1a1a2e;border-radius:0 0 14px 14px;z-index:10;display:flex;align-items:center;justify-content:center;gap:5px}
+.notch-cam{width:7px;height:7px;border-radius:50%;background:#2a2a3e;border:1.5px solid #3a3a5e}
+.notch-spk{width:32px;height:3px;border-radius:2px;background:#2a2a3e}
+.screen-content{padding-top:22px;height:100%;overflow:hidden;position:relative}
+.phone-bar{height:22px;background:#fff;display:flex;align-items:center;justify-content:center;position:absolute;bottom:0;width:100%}
+.phone-bar div{width:70px;height:3px;background:#d1d5db;border-radius:2px}
+
+/* Screens */
+.screen{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;transition:opacity .5s ease;pointer-events:none}
+.screen.active{opacity:1}
+
+/* Screen header */
+.s-header{background:#1a1a2e;padding:10px 12px 6px;text-align:center}
+.s-header .s-logo{font-size:7.5px;color:#a0aec0;letter-spacing:1.5px;text-transform:uppercase;margin-bottom:2px}
+.s-header h1{color:#fff;font-size:11px;font-weight:500}
+.s-header .s-sub{font-size:8px;color:#a0aec0;margin-top:1px}
+
+/* Step bar */
+.s-steps{display:flex;border-bottom:0.5px solid #e8eaf0;background:#fff}
+.s-step{flex:1;padding:5px 0;text-align:center;font-size:7px;color:#9aa0b0;display:flex;align-items:center;justify-content:center;gap:3px}
+.s-step.active{color:#4f46e5;font-weight:500}
+.s-step.done{color:#16a34a}
+.s-step .n{width:12px;height:12px;border-radius:50%;border:1px solid currentColor;font-size:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.s-step.done .n{background:#16a34a;border-color:#16a34a;color:#fff}
+.s-step.active .n{background:#4f46e5;border-color:#4f46e5;color:#fff}
+
+/* Body */
+.s-body{padding:10px 10px 30px;background:#fff;height:calc(100% - 22px)}
+.s-title{font-size:10px;font-weight:500;color:#1a1a2e;margin-bottom:2px}
+.s-desc{font-size:8px;color:#6b7280;margin-bottom:8px;line-height:1.5}
+
+/* Machine grid */
+.m-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin-bottom:6px}
+.m-btn{border:0.5px solid #d1d5db;border-radius:6px;padding:5px 3px;text-align:center;font-size:9px;font-weight:500;color:#1a1a2e;background:#fff}
+.m-btn.sel{border-color:#4f46e5;background:#f0efff;color:#4f46e5;border-width:1.5px}
+.m-section-lbl{font-size:7.5px;font-weight:500;color:#374151;margin-bottom:4px;display:flex;align-items:center;gap:3px}
+.m-icon{width:13px;height:13px;border-radius:3px;display:inline-flex;align-items:center;justify-content:center;font-size:7px}
+
+/* Input mock */
+.s-field{margin-bottom:7px}
+.s-label{font-size:7.5px;color:#374151;font-weight:500;margin-bottom:2px}
+.s-input{width:100%;height:26px;border:0.5px solid #d1d5db;border-radius:6px;padding:0 8px;font-size:8.5px;color:#1a1a2e;display:flex;align-items:center}
+.s-input.active-field{border-color:#4f46e5;box-shadow:0 0 0 2px rgba(79,70,229,.1)}
+.s-radio{display:flex;gap:5px;margin-bottom:7px}
+.s-rbtn{flex:1;border:0.5px solid #d1d5db;border-radius:6px;padding:5px;text-align:center;font-size:8px;color:#374151}
+.s-rbtn.sel{border-color:#4f46e5;background:#f0efff;color:#4f46e5;font-weight:500}
+
+/* Badge */
+.s-badge{display:inline-flex;align-items:center;gap:3px;background:#f0efff;border:0.5px solid #c7c7f0;border-radius:10px;padding:2px 7px;font-size:7.5px;color:#4f46e5;margin-bottom:6px}
+
+/* Btn mock */
+.s-btn{width:100%;height:26px;background:#4f46e5;color:#fff;border:none;border-radius:7px;font-size:9px;font-weight:500;display:flex;align-items:center;justify-content:center;margin-top:4px}
+.s-btn.sec{background:#fff;color:#4f46e5;border:0.5px solid #4f46e5}
+
+/* Price box */
+.s-price{background:#f8f9ff;border:0.5px solid #e0e0f0;border-radius:7px;padding:7px;margin-bottom:7px}
+.s-prow{display:flex;justify-content:space-between;font-size:8px;color:#6b7280;padding:2px 0}
+.s-prow.tot{font-size:9px;color:#1a1a2e;font-weight:500;border-top:0.5px solid #e0e0f0;margin-top:4px;padding-top:5px}
+
+/* Webpay */
+.s-wp{border:0.5px solid #e0e0f0;border-radius:8px;overflow:hidden;margin-bottom:7px}
+.s-wp-h{background:#c8102e;padding:5px 8px;display:flex;align-items:center;gap:5px}
+.s-wp-logo{background:#fff;border-radius:3px;padding:1px 5px;font-size:8px;color:#c8102e;font-weight:700}
+.s-wp-h span{color:#fff;font-size:8px;font-weight:500}
+.s-wp-b{padding:7px}
+.s-card{background:#1a1a2e;border-radius:7px;padding:8px;margin-bottom:7px}
+.s-chip{width:16px;height:11px;background:#d4af37;border-radius:2px;margin-bottom:6px}
+.s-cnum{font-size:8.5px;letter-spacing:2px;font-family:monospace;color:#fff;margin-bottom:5px}
+.s-cmeta{display:flex;justify-content:space-between;font-size:7px;color:#a0aec0}
+
+/* Loading */
+.s-loading{text-align:center;padding:16px 8px}
+.s-load-bar{height:3px;background:#e0e0f0;border-radius:2px;overflow:hidden;margin:8px 0}
+.s-load-fill{height:100%;background:#c8102e;border-radius:2px}
+.s-load-msg{font-size:8px;color:#6b7280}
+
+/* Success */
+.s-success{text-align:center;padding:8px 6px}
+.s-check{width:36px;height:36px;border-radius:50%;background:#dcfce7;display:flex;align-items:center;justify-content:center;margin:0 auto 6px}
+.s-qr-wrap{background:#fff;border:1.5px solid #1a1a2e;border-radius:8px;padding:8px;display:inline-flex;margin:0 auto 6px}
+.s-qr-info{background:#f0fdf4;border:0.5px solid #bbf7d0;border-radius:6px;padding:5px 8px;font-size:7.5px;color:#15803d;margin-bottom:6px;text-align:left}
+.s-sent{display:inline-flex;align-items:center;gap:3px;background:#f0f0ff;border:0.5px solid #c7c7f0;border-radius:10px;padding:2px 8px;font-size:7.5px;color:#4f46e5;margin-bottom:5px}
+
+/* Right panel */
+.info-panel{flex:1;color:#fff}
+.step-counter{font-size:11px;color:#6b7280;margin-bottom:6px;letter-spacing:1px;text-transform:uppercase}
+.step-title{font-size:22px;font-weight:500;color:#fff;margin-bottom:10px;line-height:1.3;min-height:60px}
+.step-body{font-size:14px;color:#a0aec0;line-height:1.7;margin-bottom:20px;min-height:80px}
+.step-action{display:flex;align-items:flex-start;gap:10px;background:#ffffff0d;border:0.5px solid #ffffff15;border-radius:10px;padding:12px 14px;font-size:12.5px;color:#cbd5e1;line-height:1.6}
+.step-action-icon{width:28px;height:28px;border-radius:8px;background:#4f46e5;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+
+/* Progress */
+.progress-bar{display:flex;gap:6px;margin-top:24px}
+.prog-dot{height:4px;border-radius:2px;background:#ffffff20;flex:1;transition:background .4s}
+.prog-dot.active{background:#4f46e5}
+.prog-dot.done{background:#16a34a}
+
+/* Controls */
+.controls{display:flex;gap:8px;margin-top:16px}
+.ctrl-btn{flex:1;height:36px;border-radius:8px;border:0.5px solid #ffffff20;background:#ffffff0a;color:#cbd5e1;font-size:12px;cursor:pointer;transition:background .15s}
+.ctrl-btn:hover{background:#ffffff15}
+.ctrl-btn.play{background:#4f46e5;border-color:#4f46e5;color:#fff}
+.ctrl-btn.play:hover{background:#4338ca}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+.info-anim{animation:fadeIn .4s ease}
+</style>
+
+<div class="scene">
+  <!-- PHONE -->
+  <div class="phone-wrap">
+    <div class="phone-frame">
+      <div class="phone-screen">
+        <div class="phone-notch"><div class="notch-cam"></div><div class="notch-spk"></div></div>
+        <div class="screen-content">
+
+          <!-- SCREEN 1: Selecciona máquina -->
+          <div class="screen active" id="scr-0">
+            <div class="s-header"><div class="s-logo">PMT · Pagos</div><h1>Activación de máquina</h1><div class="s-sub">Lavandería · Sala A</div></div>
+            <div class="s-steps">
+              <div class="s-step active"><span class="n">1</span>Máquina</div>
+              <div class="s-step"><span class="n">2</span>Contacto</div>
+              <div class="s-step"><span class="n">3</span>Pago</div>
+              <div class="s-step"><span class="n">4</span>Tu QR</div>
+            </div>
+            <div class="s-body">
+              <div class="s-title">Elige tu máquina</div>
+              <div class="s-desc">Selecciona el tipo y número.</div>
+              <div class="m-section-lbl"><span class="m-icon" style="background:#e0e7ff;color:#4f46e5">L</span>Lavadoras</div>
+              <div class="m-grid">
+                <div class="m-btn">1</div><div class="m-btn">2</div><div class="m-btn">3</div><div class="m-btn">4</div>
+                <div class="m-btn">5</div><div class="m-btn">6</div><div class="m-btn">7</div><div class="m-btn">8</div>
+              </div>
+              <div class="m-section-lbl" style="margin-top:5px"><span class="m-icon" style="background:#fef3c7;color:#b45309">S</span>Secadoras</div>
+              <div class="m-grid">
+                <div class="m-btn">1</div><div class="m-btn">2</div><div class="m-btn">3</div><div class="m-btn">4</div>
+              </div>
+              <div class="s-btn" style="margin-top:8px;opacity:.4">Continuar →</div>
+            </div>
+          </div>
+
+          <!-- SCREEN 2: Máquina seleccionada -->
+          <div class="screen" id="scr-1">
+            <div class="s-header"><div class="s-logo">PMT · Pagos</div><h1>Activación de máquina</h1><div class="s-sub">Lavandería · Sala A</div></div>
+            <div class="s-steps">
+              <div class="s-step active"><span class="n">1</span>Máquina</div>
+              <div class="s-step"><span class="n">2</span>Contacto</div>
+              <div class="s-step"><span class="n">3</span>Pago</div>
+              <div class="s-step"><span class="n">4</span>Tu QR</div>
+            </div>
+            <div class="s-body">
+              <div class="s-title">Elige tu máquina</div>
+              <div class="s-desc">Selecciona el tipo y número.</div>
+              <div class="m-section-lbl"><span class="m-icon" style="background:#e0e7ff;color:#4f46e5">L</span>Lavadoras</div>
+              <div class="m-grid">
+                <div class="m-btn">1</div><div class="m-btn">2</div><div class="m-btn sel">3</div><div class="m-btn">4</div>
+                <div class="m-btn">5</div><div class="m-btn">6</div><div class="m-btn">7</div><div class="m-btn">8</div>
+              </div>
+              <div class="m-section-lbl" style="margin-top:5px"><span class="m-icon" style="background:#fef3c7;color:#b45309">S</span>Secadoras</div>
+              <div class="m-grid">
+                <div class="m-btn">1</div><div class="m-btn">2</div><div class="m-btn">3</div><div class="m-btn">4</div>
+              </div>
+              <div class="s-btn" style="margin-top:8px">Continuar →</div>
+            </div>
+          </div>
+
+          <!-- SCREEN 3: Contacto -->
+          <div class="screen" id="scr-2">
+            <div class="s-header"><div class="s-logo">PMT · Pagos</div><h1>Activación de máquina</h1><div class="s-sub">Lavandería · Sala A</div></div>
+            <div class="s-steps">
+              <div class="s-step done"><span class="n">✓</span>Máquina</div>
+              <div class="s-step active"><span class="n">2</span>Contacto</div>
+              <div class="s-step"><span class="n">3</span>Pago</div>
+              <div class="s-step"><span class="n">4</span>Tu QR</div>
+            </div>
+            <div class="s-body">
+              <div class="s-title">Registra tu contacto</div>
+              <div class="s-badge">Lavadora · N° 3</div>
+              <div class="s-desc">Recibirás el QR al completar el pago.</div>
+              <div class="s-radio">
+                <div class="s-rbtn sel">Correo</div>
+                <div class="s-rbtn">WhatsApp</div>
+              </div>
+              <div class="s-field">
+                <div class="s-label">Correo electrónico</div>
+                <div class="s-input active-field">maria@ejemplo.com</div>
+              </div>
+              <div class="s-btn">Continuar →</div>
+            </div>
+          </div>
+
+          <!-- SCREEN 4: Pago -->
+          <div class="screen" id="scr-3">
+            <div class="s-header"><div class="s-logo">PMT · Pagos</div><h1>Activación de máquina</h1><div class="s-sub">Lavandería · Sala A</div></div>
+            <div class="s-steps">
+              <div class="s-step done"><span class="n">✓</span>Máquina</div>
+              <div class="s-step done"><span class="n">✓</span>Contacto</div>
+              <div class="s-step active"><span class="n">3</span>Pago</div>
+              <div class="s-step"><span class="n">4</span>Tu QR</div>
+            </div>
+            <div class="s-body">
+              <div class="s-title">Resumen del pago</div>
+              <div class="s-price">
+                <div class="s-prow"><span>Lavadora · N° 3</span><span>$2.990</span></div>
+                <div class="s-prow"><span>Comisión</span><span>$0</span></div>
+                <div class="s-prow tot"><span>Total</span><span>$2.990 CLP</span></div>
+              </div>
+              <div class="s-wp">
+                <div class="s-wp-h"><div class="s-wp-logo">Webpay</div><span>Plus · Pago seguro</span></div>
+                <div class="s-wp-b">
+                  <div class="s-card">
+                    <div class="s-chip"></div>
+                    <div class="s-cnum">•••• •••• •••• 4242</div>
+                    <div class="s-cmeta"><span>VISA</span><span>12/27</span></div>
+                  </div>
+                </div>
+              </div>
+              <div class="s-btn">Pagar $2.990 CLP</div>
+            </div>
+          </div>
+
+          <!-- SCREEN 5: Procesando -->
+          <div class="screen" id="scr-4">
+            <div class="s-header"><div class="s-logo">PMT · Pagos</div><h1>Activación de máquina</h1><div class="s-sub">Lavandería · Sala A</div></div>
+            <div class="s-steps">
+              <div class="s-step done"><span class="n">✓</span>Máquina</div>
+              <div class="s-step done"><span class="n">✓</span>Contacto</div>
+              <div class="s-step active"><span class="n">3</span>Pago</div>
+              <div class="s-step"><span class="n">4</span>Tu QR</div>
+            </div>
+            <div class="s-body">
+              <div class="s-loading">
+                <div style="width:38px;height:38px;border-radius:50%;background:#fff3f3;display:flex;align-items:center;justify-content:center;margin:0 auto 8px"><div class="s-wp-logo" style="font-size:8px">Webpay</div></div>
+                <div class="s-title" style="margin-bottom:4px">Procesando pago</div>
+                <div class="s-desc">Verificando con Transbank...</div>
+                <div class="s-load-bar"><div class="s-load-fill" id="load-fill" style="width:0%"></div></div>
+                <div class="s-load-msg" id="load-msg">Conectando con el banco...</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SCREEN 6: QR recibido -->
+          <div class="screen" id="scr-5">
+            <div class="s-header"><div class="s-logo">PMT · Pagos</div><h1>Activación de máquina</h1><div class="s-sub">Lavandería · Sala A</div></div>
+            <div class="s-steps">
+              <div class="s-step done"><span class="n">✓</span>Máquina</div>
+              <div class="s-step done"><span class="n">✓</span>Contacto</div>
+              <div class="s-step done"><span class="n">✓</span>Pago</div>
+              <div class="s-step active"><span class="n">4</span>Tu QR</div>
+            </div>
+            <div class="s-body">
+              <div class="s-success">
+                <div class="s-check"><svg fill="none" viewBox="0 0 24 24" stroke="#16a34a" stroke-width="2.5" width="18" height="18"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg></div>
+                <div class="s-title" style="text-align:center;margin-bottom:3px">¡Pago aprobado!</div>
+                <div style="font-size:7.5px;color:#6b7280;margin-bottom:8px">Lavadora N° 3 · válido 10 min</div>
+                <div class="s-qr-wrap">
+                  <svg viewBox="0 0 40 40" width="90" height="90">
+                    <rect width="40" height="40" fill="white"/>
+                    <rect x="10" y="10" width="7" height="7" fill="none" stroke="#1a1a2e" stroke-width="1.5"/>
+                    <rect x="13" y="13" width="1" height="1" fill="#1a1a2e"/>
+                    <rect x="23" y="10" width="7" height="7" fill="none" stroke="#1a1a2e" stroke-width="1.5"/>
+                    <rect x="26" y="13" width="1" height="1" fill="#1a1a2e"/>
+                    <rect x="10" y="23" width="7" height="7" fill="none" stroke="#1a1a2e" stroke-width="1.5"/>
+                    <rect x="13" y="26" width="1" height="1" fill="#1a1a2e"/>
+                    <rect x="17" y="17" width="2" height="2" fill="#1a1a2e"/>
+                    <rect x="21" y="17" width="2" height="2" fill="#1a1a2e"/>
+                    <rect x="24" y="17" width="2" height="2" fill="#1a1a2e"/>
+                    <rect x="17" y="21" width="2" height="2" fill="#1a1a2e"/>
+                    <rect x="24" y="21" width="2" height="2" fill="#1a1a2e"/>
+                    <rect x="17" y="24" width="2" height="2" fill="#1a1a2e"/>
+                    <rect x="26" y="24" width="2" height="2" fill="#1a1a2e"/>
+                    <rect x="20" y="27" width="2" height="2" fill="#1a1a2e"/>
+                    <rect x="23" y="24" width="2" height="2" fill="#1a1a2e"/>
+                  </svg>
+                </div>
+                <div class="s-sent">✓ Enviado a tu correo</div>
+                <div class="s-qr-info">Presenta este QR al lector ESP32 instalado en la Lavadora N° 3.</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="phone-bar"><div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INFO PANEL -->
+  <div class="info-panel">
+    <div class="step-counter" id="step-counter">Paso 1 de 6</div>
+    <div class="step-title" id="step-title">El cliente llega a la lavandería</div>
+    <div class="step-body" id="step-body">Escanea el QR físico pegado en la sala con la cámara de su teléfono y es redirigido automáticamente al sitio de pago.</div>
+    <div class="step-action">
+      <div class="step-action-icon">
+        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="white" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5"/></svg>
+      </div>
+      <div id="step-action-text">Apunta la cámara al QR de la sala para abrir el sitio de pago.</div>
+    </div>
+    <div class="progress-bar" id="progress-bar"></div>
+    <div class="controls">
+      <button class="ctrl-btn" onclick="prevStep()">← Anterior</button>
+      <button class="ctrl-btn play" id="play-btn" onclick="togglePlay()">⏸ Pausar</button>
+      <button class="ctrl-btn" onclick="nextStep()">Siguiente →</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const steps=[
+  {title:'El cliente llega a la lavandería',body:'Escanea el QR físico pegado en la sala con la cámara de su teléfono y es redirigido automáticamente al sitio de pago.',action:'Apunta la cámara al QR de la sala para abrir el sitio de pago.'},
+  {title:'Elige la máquina que quiere usar',body:'Ve la grilla con todas las lavadoras y secadoras disponibles. Toca el número de la máquina que desea usar.',action:'Tocar el número de la máquina deseada, por ejemplo Lavadora N° 3.'},
+  {title:'Ingresa su correo o WhatsApp',body:'Registra su medio de contacto para recibir el QR de activación. Puede elegir entre correo electrónico o WhatsApp.',action:'Escribe su correo o número y presiona Continuar.'},
+  {title:'Revisa el resumen y paga',body:'Confirma los detalles de su compra y procede a pagar de forma segura a través de Webpay Plus con tarjeta de débito o crédito.',action:'Presionar "Pagar $2.990 CLP" para iniciar la transacción.'},
+  {title:'El pago se está procesando',body:'Webpay verifica la tarjeta con el banco emisor y autoriza la transacción en segundos. El cliente solo espera la confirmación.',action:'Esperar a que Transbank confirme el pago.'},
+  {title:'Recibe su QR de activación',body:'El QR aparece en pantalla de inmediato y también se envía al correo o WhatsApp registrado. Es válido por 10 minutos y solo funciona en la máquina elegida.',action:'Acercarse a la Lavadora N° 3 y mostrar el QR al lector ESP32.'},
+];
+
+let current=0, playing=true, timer=null;
+const DURATION=4000;
+
+function buildProgress(){
+  const pb=document.getElementById('progress-bar');
+  pb.innerHTML=steps.map((_,i)=>`<div class="prog-dot" id="pd-${i}"></div>`).join('');
+}
+
+function updateInfo(idx){
+  const s=steps[idx];
+  const panel=document.querySelector('.info-panel');
+  document.getElementById('step-counter').textContent=`Paso ${idx+1} de ${steps.length}`;
+  document.getElementById('step-title').textContent=s.title;
+  document.getElementById('step-body').textContent=s.body;
+  document.getElementById('step-action-text').textContent=s.action;
+  panel.querySelector('.info-panel > div:nth-child(2)')?.classList.remove('info-anim');
+  void panel.offsetWidth;
+  document.querySelector('.step-title').classList.add('info-anim');
+  steps.forEach((_,i)=>{
+    const d=document.getElementById(`pd-${i}`);
+    d.className='prog-dot'+(i<idx?' done':i===idx?' active':'');
+  });
+}
+
+function showScreen(idx){
+  document.querySelectorAll('.screen').forEach((s,i)=>{
+    s.classList.toggle('active',i===idx);
+  });
+  if(idx===4){
+    const fill=document.getElementById('load-fill');
+    const msg=document.getElementById('load-msg');
+    if(fill) fill.style.width='0%';
+    setTimeout(()=>{if(fill)fill.style.transition='width 3s ease';if(fill)fill.style.width='100%';},100);
+    const msgs=['Conectando con el banco...','Verificando tarjeta...','Autorizando transacción...','Pago aprobado ✓'];
+    let mi=0;
+    const iv=setInterval(()=>{if(msg&&msgs[mi])msg.textContent=msgs[mi];mi++;if(mi>=msgs.length)clearInterval(iv);},750);
+  }
+}
+
+function goTo(idx){
+  current=idx;
+  showScreen(idx);
+  updateInfo(idx);
+}
+
+function nextStep(){
+  current=(current+1)%steps.length;
+  goTo(current);
+}
+
+function prevStep(){
+  current=(current-1+steps.length)%steps.length;
+  goTo(current);
+}
+
+function togglePlay(){
+  playing=!playing;
+  document.getElementById('play-btn').textContent=playing?'⏸ Pausar':'▶ Reproducir';
+  document.getElementById('play-btn').className='ctrl-btn play';
+  if(playing) startTimer(); else clearInterval(timer);
+}
+
+function startTimer(){
+  clearInterval(timer);
+  timer=setInterval(nextStep, DURATION);
+}
+
+buildProgress();
+goTo(0);
+startTimer();
+</script>

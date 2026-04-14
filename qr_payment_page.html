@@ -1,0 +1,352 @@
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,-apple-system,sans-serif;background:#e8eaf0;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem}
+.phone-frame{background:#1a1a2e;border-radius:44px;padding:14px;box-shadow:0 0 0 2px #2a2a3e,0 24px 60px rgba(0,0,0,.35);width:390px;flex-shrink:0}
+.phone-screen{border-radius:32px;overflow:hidden;background:#f4f6fa;position:relative}
+.phone-notch{position:absolute;top:0;left:50%;transform:translateX(-50%);width:110px;height:28px;background:#1a1a2e;border-radius:0 0 18px 18px;z-index:10;display:flex;align-items:center;justify-content:center;gap:6px}
+.phone-notch-cam{width:8px;height:8px;border-radius:50%;background:#2a2a3e;border:1.5px solid #3a3a5e}
+.phone-notch-speaker{width:40px;height:4px;border-radius:2px;background:#2a2a3e}
+.phone-content{padding-top:28px;max-height:780px;overflow-y:auto}
+.phone-content::-webkit-scrollbar{display:none}
+.card{background:#fff;border-radius:0;border:none;width:100%;overflow:hidden}
+.phone-home-bar{height:28px;background:#fff;display:flex;align-items:center;justify-content:center}
+.phone-home-bar div{width:100px;height:4px;background:#d1d5db;border-radius:2px}
+.header{background:#1a1a2e;padding:1.25rem 1.5rem .75rem;text-align:center}
+.header .logo{font-size:11px;color:#a0aec0;letter-spacing:2px;text-transform:uppercase;margin-bottom:.3rem}
+.header h1{color:#fff;font-size:18px;font-weight:500}
+.header .sub{font-size:12px;color:#a0aec0;margin-top:3px}
+.step-bar{display:flex;border-bottom:0.5px solid #e8eaf0}
+.step-dot{flex:1;padding:9px 0;text-align:center;font-size:10px;color:#9aa0b0;display:flex;align-items:center;justify-content:center;gap:4px}
+.step-dot.active{color:#4f46e5;font-weight:500}
+.step-dot.done{color:#16a34a}
+.step-dot .num{width:16px;height:16px;border-radius:50%;border:1px solid currentColor;font-size:9px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.step-dot.done .num{background:#16a34a;border-color:#16a34a;color:#fff}
+.step-dot.active .num{background:#4f46e5;border-color:#4f46e5;color:#fff}
+.body{padding:1.5rem}
+h2{font-size:16px;font-weight:500;color:#1a1a2e;margin-bottom:.3rem}
+.desc{font-size:12.5px;color:#6b7280;margin-bottom:1.1rem;line-height:1.6}
+label{display:block;font-size:12.5px;color:#374151;margin-bottom:4px;font-weight:500}
+input{width:100%;height:40px;border:0.5px solid #d1d5db;border-radius:8px;padding:0 12px;font-size:13.5px;color:#1a1a2e;background:#fff;outline:none;transition:border .15s}
+input:focus{border-color:#4f46e5;box-shadow:0 0 0 3px rgba(79,70,229,.08)}
+.radio-group{display:flex;gap:8px;margin-bottom:1rem}
+.radio-btn{flex:1;border:0.5px solid #d1d5db;border-radius:8px;padding:9px;text-align:center;cursor:pointer;font-size:12.5px;color:#374151;transition:all .15s;user-select:none}
+.radio-btn.active{border-color:#4f46e5;background:#f0efff;color:#4f46e5;font-weight:500}
+.field{margin-bottom:.9rem}
+.hint{font-size:11px;color:#9ca3af;margin-top:3px}
+.btn{width:100%;height:42px;background:#4f46e5;color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:500;cursor:pointer;margin-top:.4rem;transition:background .15s}
+.btn:hover{background:#4338ca}
+.btn:disabled{background:#a5a5c0;cursor:not-allowed}
+.btn.secondary{background:#fff;color:#4f46e5;border:0.5px solid #4f46e5;margin-top:8px}
+.btn.secondary:hover{background:#f0efff}
+.machine-section{margin-bottom:1rem}
+.machine-section-label{font-size:12px;font-weight:500;color:#374151;margin-bottom:8px;display:flex;align-items:center;gap:6px}
+.machine-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:.5rem}
+.machine-btn{border:0.5px solid #d1d5db;border-radius:10px;padding:10px 6px;text-align:center;cursor:pointer;transition:all .15s;user-select:none;background:#fff}
+.machine-btn:hover{border-color:#4f46e5;background:#f8f8ff}
+.machine-btn.selected{border-color:#4f46e5;background:#f0efff;border-width:1.5px}
+.machine-num{font-size:15px;font-weight:500;color:#1a1a2e;margin-bottom:2px}
+.machine-btn.selected .machine-num{color:#4f46e5}
+.machine-status{font-size:9px;color:#6b7280}
+.machine-btn.selected .machine-status{color:#4f46e5}
+.legend{display:flex;gap:12px;margin-bottom:1rem;font-size:11px;color:#6b7280}
+.legend-item{display:flex;align-items:center;gap:5px}
+.legend-dot{width:10px;height:10px;border-radius:3px;border:0.5px solid #d1d5db}
+.legend-dot.avail{background:#fff}
+.legend-dot.sel{background:#f0efff;border-color:#4f46e5}
+.price-box{background:#f8f9ff;border:0.5px solid #e0e0f0;border-radius:10px;padding:.9rem;margin-bottom:1.1rem}
+.price-row{display:flex;justify-content:space-between;font-size:12.5px;color:#6b7280;padding:3px 0}
+.price-row.total{font-size:14px;color:#1a1a2e;font-weight:500;border-top:0.5px solid #e0e0f0;margin-top:6px;padding-top:8px}
+.selected-badge{display:inline-flex;align-items:center;gap:5px;background:#f0efff;border:0.5px solid #c7c7f0;border-radius:20px;padding:3px 10px;font-size:11.5px;color:#4f46e5;margin-bottom:.9rem}
+.webpay-box{border:0.5px solid #e0e0f0;border-radius:12px;overflow:hidden;margin-bottom:1.1rem}
+.webpay-header{background:#c8102e;padding:9px 14px;display:flex;align-items:center;gap:8px}
+.webpay-header span{color:#fff;font-size:12.5px;font-weight:500}
+.webpay-logo{background:#fff;border-radius:4px;padding:2px 7px;font-size:11.5px;color:#c8102e;font-weight:700}
+.webpay-body{padding:.9rem}
+.card-mock{background:#1a1a2e;border-radius:10px;padding:12px;margin-bottom:.9rem}
+.card-chip{width:26px;height:18px;background:#d4af37;border-radius:4px;margin-bottom:10px}
+.card-num{font-size:14px;letter-spacing:3px;font-family:monospace;color:#fff;margin-bottom:8px}
+.card-meta{display:flex;justify-content:space-between;font-size:10.5px;color:#a0aec0}
+.loading-bar{height:4px;background:#e0e0f0;border-radius:2px;overflow:hidden;margin-bottom:.7rem}
+.loading-fill{height:100%;background:#c8102e;border-radius:2px;animation:fill 2.5s ease forwards}
+@keyframes fill{from{width:0}to{width:100%}}
+.status-msg{font-size:12.5px;color:#6b7280;text-align:center}
+.success-icon{width:58px;height:58px;border-radius:50%;background:#dcfce7;display:flex;align-items:center;justify-content:center;margin:0 auto .9rem}
+.qr-container{background:#fff;border:2px solid #1a1a2e;border-radius:12px;padding:14px;display:flex;justify-content:center;margin:0 auto .9rem}
+.qr-info{background:#f0fdf4;border:0.5px solid #bbf7d0;border-radius:8px;padding:9px 12px;font-size:11.5px;color:#15803d;margin-bottom:.9rem;display:flex;gap:8px;align-items:center}
+.sent-badge{display:inline-flex;align-items:center;gap:5px;background:#f0f0ff;border:0.5px solid #c7c7f0;border-radius:20px;padding:3px 12px;font-size:11.5px;color:#4f46e5;margin-bottom:.9rem}
+.instruct{font-size:12px;color:#6b7280;text-align:center;line-height:1.7}
+.tag{display:inline-block;background:#f1f5f9;border-radius:4px;padding:1px 6px;font-size:10.5px;color:#64748b;font-family:monospace}
+.machine-tag{display:inline-flex;align-items:center;gap:4px;background:#f0efff;border-radius:6px;padding:2px 8px;font-size:11px;color:#4f46e5;font-weight:500}
+</style>
+
+<div class="phone-frame">
+  <div class="phone-screen">
+    <div class="phone-notch"><div class="phone-notch-cam"></div><div class="phone-notch-speaker"></div></div>
+    <div class="phone-content">
+      <div class="card">
+        <div class="header">
+          <div class="logo">PMT · Plataforma de pagos</div>
+          <h1 id="main-title">Activación de máquina</h1>
+          <div class="sub" id="main-sub">Lavandería · Sala A</div>
+        </div>
+        <div class="step-bar" id="steps">
+          <div class="step-dot active" id="s1"><span class="num">1</span>Máquina</div>
+          <div class="step-dot" id="s2"><span class="num">2</span>Contacto</div>
+          <div class="step-dot" id="s3"><span class="num">3</span>Pago</div>
+          <div class="step-dot" id="s4"><span class="num">4</span>Tu QR</div>
+        </div>
+        <div class="body" id="body"></div>
+      </div>
+      <div class="phone-home-bar"><div></div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+let selectedMachine=null,contactType='email',contactVal='',processing=false;
+let orderId='PMT-'+Math.floor(Math.random()*90000+10000);
+
+const machines={
+  lavadora:[1,2,3,4,5,6,7,8].map(n=>({n,occ:false})),
+  secadora:[1,2,3,4,5,6].map(n=>({n,occ:false})),
+  prontopet:[1,2].map(n=>({n,occ:false}))
+};
+
+const typeNames={lavadora:'Lavadora',secadora:'Secadora',prontopet:'ProntoPet'};
+const typeColors={
+  lavadora:{bg:'#e0e7ff',color:'#4f46e5',label:'L'},
+  secadora:{bg:'#fef3c7',color:'#b45309',label:'S'},
+  prontopet:{bg:'#fce7f3',color:'#be185d',label:'P'}
+};
+
+function setStep(n){
+  [1,2,3,4].forEach(i=>{
+    const el=$('s'+i);
+    el.className='step-dot'+(i<n?' done':i===n?' active':'');
+    el.querySelector('.num').textContent=i<n?'✓':i;
+  });
+}
+
+function buildGrid(type){
+  return machines[type].map(m=>{
+    const isSelected=selectedMachine&&selectedMachine.type===type&&selectedMachine.n===m.n;
+    return`<div class="machine-btn${isSelected?' selected':''}" id="mb-${type}-${m.n}" onclick="selectMachine('${type}',${m.n})">
+      <div class="machine-num">${m.n}</div>
+      <div class="machine-status">${isSelected?'Elegida':'Libre'}</div>
+    </div>`;
+  }).join('');
+}
+
+function renderStep1(){
+  setStep(1);
+  const sections=Object.keys(machines).map(type=>{
+    const c=typeColors[type];
+    return`<div class="machine-section">
+      <div class="machine-section-label">
+        <span style="background:${c.bg};color:${c.color};width:20px;height:20px;border-radius:4px;display:inline-flex;align-items:center;justify-content:center;font-size:11px">${c.label}</span>
+        ${typeNames[type]}
+      </div>
+      <div class="machine-grid" id="grid-${type}">${buildGrid(type)}</div>
+    </div>`;
+  }).join('');
+
+  $('body').innerHTML=`
+    <h2>Elige tu máquina</h2>
+    <p class="desc">Selecciona el tipo y número de máquina.</p>
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot avail"></div>Disponible</div>
+      <div class="legend-item"><div class="legend-dot sel"></div>Seleccionada</div>
+    </div>
+    ${sections}
+    <button class="btn" id="btn-step1" onclick="goStep2()" ${selectedMachine?'':'disabled'}>Continuar →</button>
+  `;
+}
+
+function selectMachine(type,n){
+  selectedMachine={type,n};
+  document.querySelectorAll('.machine-btn').forEach(b=>{
+    b.classList.remove('selected');
+    const s=b.querySelector('.machine-status');
+    if(s) s.textContent='Libre';
+  });
+  const el=$(`mb-${type}-${n}`);
+  if(el){
+    el.classList.add('selected');
+    el.querySelector('.machine-status').textContent='Elegida';
+  }
+  const btn=$('btn-step1');
+  if(btn) btn.disabled=false;
+}
+
+function goStep2(){if(selectedMachine) step2();}
+
+function step2(){
+  setStep(2);
+  const mLabel=typeNames[selectedMachine.type]+' · N° '+selectedMachine.n;
+  $('body').innerHTML=`
+    <h2>Registra tu contacto</h2>
+    <div class="selected-badge">${mLabel}</div>
+    <p class="desc">Recibirás tu QR de activación al completar el pago.</p>
+    <div class="radio-group">
+      <div class="radio-btn active" id="r-email" onclick="switchContact('email')">Correo</div>
+      <div class="radio-btn" id="r-wa" onclick="switchContact('wa')">WhatsApp</div>
+    </div>
+    <div class="field">
+      <label id="contact-label">Correo electrónico</label>
+      <input type="email" id="contact-input" placeholder="tucorreo@ejemplo.com"/>
+      <div class="hint" id="contact-hint">Te enviaremos el QR a esta dirección.</div>
+    </div>
+    <button class="btn" onclick="validateStep2()">Continuar →</button>
+    <button class="btn secondary" onclick="renderStep1()">← Volver</button>
+  `;
+}
+
+function switchContact(type){
+  contactType=type;
+  $('r-email').className='radio-btn'+(type==='email'?' active':'');
+  $('r-wa').className='radio-btn'+(type==='wa'?' active':'');
+  if(type==='email'){
+    $('contact-label').textContent='Correo electrónico';
+    $('contact-input').type='email';
+    $('contact-input').placeholder='tucorreo@ejemplo.com';
+    $('contact-hint').textContent='Te enviaremos el QR a esta dirección.';
+  } else {
+    $('contact-label').textContent='Número de WhatsApp';
+    $('contact-input').type='tel';
+    $('contact-input').placeholder='+56 9 1234 5678';
+    $('contact-hint').textContent='Te enviaremos el QR por mensaje de WhatsApp.';
+  }
+}
+
+function validateStep2(){
+  const val=$('contact-input').value.trim();
+  if(!val){$('contact-input').style.borderColor='#ef4444';return;}
+  contactVal=val;
+  step3();
+}
+
+function step3(){
+  setStep(3);
+  const mLabel=typeNames[selectedMachine.type]+' · N° '+selectedMachine.n;
+  $('body').innerHTML=`
+    <h2>Resumen del pago</h2>
+    <div class="price-box">
+      <div class="price-row"><span>Activación · ${mLabel}</span><span>$2.990</span></div>
+      <div class="price-row"><span>Comisión transacción</span><span>$0</span></div>
+      <div class="price-row total"><span>Total a pagar</span><span>$2.990 CLP</span></div>
+    </div>
+    <div class="webpay-box">
+      <div class="webpay-header"><div class="webpay-logo">Webpay</div><span>Plus · Pago seguro</span></div>
+      <div class="webpay-body">
+        <div class="card-mock">
+          <div class="card-chip"></div>
+          <div class="card-num">•••• •••• •••• 4242</div>
+          <div class="card-meta"><span>TARJETA DE PRUEBA</span><span>12/27</span></div>
+        </div>
+        <div class="field">
+          <label>Número de tarjeta</label>
+          <input type="text" value="4111 1111 1111 1111" readonly style="color:#9ca3af;background:#f9fafb"/>
+        </div>
+        <div style="display:flex;gap:8px">
+          <div class="field" style="flex:1"><label>Vencimiento</label><input type="text" value="12/27" readonly style="color:#9ca3af;background:#f9fafb"/></div>
+          <div class="field" style="flex:1"><label>CVV</label><input type="text" value="123" readonly style="color:#9ca3af;background:#f9fafb"/></div>
+        </div>
+      </div>
+    </div>
+    <button class="btn" id="pay-btn" onclick="processPay()">Pagar $2.990 CLP</button>
+    <button class="btn secondary" onclick="step2()">← Volver</button>
+  `;
+}
+
+function processPay(){
+  if(processing) return; processing=true;
+  $('body').innerHTML=`
+    <div style="text-align:center;padding:1rem 0">
+      <div style="width:52px;height:52px;border-radius:50%;background:#fff3f3;display:flex;align-items:center;justify-content:center;margin:0 auto 1rem">
+        <div class="webpay-logo" style="font-size:13px">Webpay</div>
+      </div>
+      <h2 style="margin-bottom:.5rem">Procesando pago</h2>
+      <p class="desc">Verificando con Transbank...</p>
+      <div class="loading-bar"><div class="loading-fill"></div></div>
+      <p class="status-msg" id="pay-status">Conectando con el banco emisor...</p>
+    </div>
+  `;
+  const msgs=['Verificando tarjeta...','Autorizando transacción...','Pago aprobado ✓'];
+  let i=0;
+  const iv=setInterval(()=>{
+    if($('pay-status')) $('pay-status').textContent=msgs[i]||msgs[2];
+    i++;
+    if(i>2){clearInterval(iv);setTimeout(()=>{processing=false;step4();},600);}
+  },800);
+}
+
+function generateQR(){
+  return`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40" width="150" height="150">
+    <rect width="40" height="40" fill="white"/>
+    <rect x="10" y="10" width="7" height="7" fill="none" stroke="#1a1a2e" stroke-width="1.5"/>
+    <rect x="13" y="13" width="1" height="1" fill="#1a1a2e"/>
+    <rect x="23" y="10" width="7" height="7" fill="none" stroke="#1a1a2e" stroke-width="1.5"/>
+    <rect x="26" y="13" width="1" height="1" fill="#1a1a2e"/>
+    <rect x="10" y="23" width="7" height="7" fill="none" stroke="#1a1a2e" stroke-width="1.5"/>
+    <rect x="13" y="26" width="1" height="1" fill="#1a1a2e"/>
+    <rect x="17" y="17" width="2" height="2" fill="#1a1a2e"/>
+    <rect x="21" y="17" width="2" height="2" fill="#1a1a2e"/>
+    <rect x="17" y="21" width="2" height="2" fill="#1a1a2e"/>
+    <rect x="21" y="21" width="2" height="2" fill="#1a1a2e"/>
+    <rect x="24" y="17" width="2" height="2" fill="#1a1a2e"/>
+    <rect x="27" y="17" width="2" height="2" fill="#1a1a2e"/>
+    <rect x="24" y="21" width="2" height="2" fill="#1a1a2e"/>
+    <rect x="27" y="21" width="2" height="2" fill="#1a1a2e"/>
+    <rect x="17" y="24" width="2" height="2" fill="#1a1a2e"/>
+    <rect x="20" y="24" width="2" height="2" fill="#1a1a2e"/>
+    <rect x="23" y="24" width="2" height="2" fill="#1a1a2e"/>
+    <rect x="26" y="24" width="2" height="2" fill="#1a1a2e"/>
+    <rect x="17" y="27" width="2" height="2" fill="#1a1a2e"/>
+    <rect x="23" y="27" width="2" height="2" fill="#1a1a2e"/>
+    <rect x="26" y="27" width="2" height="2" fill="#1a1a2e"/>
+  </svg>`;
+}
+
+function step4(){
+  setStep(4);
+  const mLabel=typeNames[selectedMachine.type]+' N° '+selectedMachine.n;
+  const contactLabel=contactType==='email'?'correo electrónico':'WhatsApp';
+  $('body').innerHTML=`
+    <div style="text-align:center">
+      <div class="success-icon">
+        <svg fill="none" viewBox="0 0 24 24" stroke="#16a34a" stroke-width="2.5" width="30" height="30">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+        </svg>
+      </div>
+      <h2 style="margin-bottom:4px">¡Pago aprobado!</h2>
+      <p class="desc" style="margin-bottom:.5rem">Orden <span class="tag">${orderId}</span></p>
+      <div style="margin-bottom:.8rem">
+        <span class="machine-tag">${mLabel}</span>
+      </div>
+      <div class="qr-container">${generateQR()}</div>
+      <div class="sent-badge">
+        <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+        QR enviado a tu ${contactLabel}
+      </div>
+      <div class="qr-info">
+        <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 110 20A10 10 0 0112 2z"/></svg>
+        Válido solo para <strong style="margin:0 3px">${mLabel}</strong> · expira en 10 min.
+      </div>
+      <p class="instruct">Acércate a la <strong>${mLabel}</strong><br>y presenta este QR al lector ESP32.<br><br>
+        <span style="font-size:11px;color:#9ca3af">${contactVal}</span>
+      </p>
+    </div>
+    <button class="btn" style="margin-top:1.1rem" onclick="window.print()">Guardar / Imprimir QR</button>
+    <button class="btn secondary" onclick="newPurchase()">Nueva activación</button>
+  `;
+}
+
+function newPurchase(){
+  selectedMachine=null;contactVal='';
+  orderId='PMT-'+Math.floor(Math.random()*90000+10000);
+  renderStep1();
+}
+
+renderStep1();
+</script>
