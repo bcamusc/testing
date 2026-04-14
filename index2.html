@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1"/>
+<meta name="theme-color" content="#1a1a2e"/>
+<title>PMT · Activación de máquina</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:#f4f6fa;color:#1a1a2e}
+.app{min-height:100vh;display:flex;flex-direction:column;max-width:480px;margin:0 auto;background:#fff;box-shadow:0 0 40px rgba(0,0,0,.08)}
+
+/* Header */
+.header{background:#1a1a2e;padding:env(safe-area-inset-top,0) 0 0;position:sticky;top:0;z-index:100}
+.header-inner{padding:16px 20px 12px;text-align:center}
+.logo{font-size:10px;color:#a0aec0;letter-spacing:2px;text-transform:uppercase;margin-bottom:3px}
+.header h1{color:#fff;font-size:17px;font-weight:500}
+.header-sub{font-size:12px;color:#a0aec0;margin-top:2px}
+
+/* Step bar */
+.stepbar{display:flex;border-bottom:1px solid #e8eaf0;background:#fff}
+.step{flex:1;padding:10px 4px;text-align:center;font-size:11px;color:#9aa0b0;display:flex;align-items:center;justify-content:center;gap:4px}
+.step.active{color:#4f46e5;font-weight:600}
+.step.done{color:#16a34a}
+.step .n{width:18px;height:18px;border-radius:50%;border:1.5px solid currentColor;font-size:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.step.done .n{background:#16a34a;border-color:#16a34a;color:#fff}
+.step.active .n{background:#4f46e5;border-color:#4f46e5;color:#fff}
+
+/* Body */
+.body{flex:1;padding:20px 20px 32px;overflow-y:auto}
+h2{font-size:18px;font-weight:600;margin-bottom:4px}
+.desc{font-size:13.5px;color:#6b7280;margin-bottom:18px;line-height:1.6}
+
+/* Legend */
+.legend{display:flex;gap:14px;margin-bottom:14px}
+.leg{display:flex;align-items:center;gap:5px;font-size:12px;color:#6b7280}
+.leg-dot{width:10px;height:10px;border-radius:3px;border:1px solid #d1d5db}
+.leg-dot.sel{background:#f0efff;border-color:#4f46e5}
+
+/* Machine sections */
+.m-section{margin-bottom:18px}
+.m-label{font-size:13px;font-weight:600;color:#374151;margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.m-icon{width:24px;height:24px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0}
+.m-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.m-btn{border:1.5px solid #e5e7eb;border-radius:12px;padding:12px 6px;text-align:center;cursor:pointer;transition:all .15s;background:#fff;user-select:none;-webkit-user-select:none;active:scale(.97)}
+.m-btn:active{transform:scale(.95)}
+.m-btn.sel{border-color:#4f46e5;background:#f0efff;border-width:2px}
+.m-num{font-size:18px;font-weight:600;color:#1a1a2e;margin-bottom:2px}
+.m-btn.sel .m-num{color:#4f46e5}
+.m-stat{font-size:10px;color:#9ca3af}
+.m-btn.sel .m-stat{color:#4f46e5}
+
+/* Form */
+.field{margin-bottom:16px}
+label{display:block;font-size:13px;font-weight:600;color:#374151;margin-bottom:6px}
+input[type=email],input[type=tel],input[type=text]{width:100%;height:48px;border:1.5px solid #e5e7eb;border-radius:12px;padding:0 14px;font-size:15px;color:#1a1a2e;background:#fff;outline:none;-webkit-appearance:none;transition:border .15s}
+input:focus{border-color:#4f46e5;box-shadow:0 0 0 4px rgba(79,70,229,.08)}
+input[readonly]{color:#9ca3af;background:#f9fafb}
+.hint{font-size:11.5px;color:#9ca3af;margin-top:5px}
+
+/* Radio */
+.radio-group{display:flex;gap:10px;margin-bottom:18px}
+.rbtn{flex:1;border:1.5px solid #e5e7eb;border-radius:12px;padding:11px;text-align:center;cursor:pointer;font-size:13.5px;color:#374151;transition:all .15s;user-select:none}
+.rbtn:active{transform:scale(.97)}
+.rbtn.active{border-color:#4f46e5;background:#f0efff;color:#4f46e5;font-weight:600}
+
+/* Badge */
+.badge{display:inline-flex;align-items:center;background:#f0efff;border:1px solid #c7c7f0;border-radius:20px;padding:4px 12px;font-size:12px;color:#4f46e5;font-weight:500;margin-bottom:16px}
+
+/* Buttons */
+.btn{width:100%;height:52px;background:#4f46e5;color:#fff;border:none;border-radius:14px;font-size:16px;font-weight:600;cursor:pointer;transition:background .15s;margin-top:6px;-webkit-appearance:none}
+.btn:active{background:#3730a3;transform:scale(.98)}
+.btn:disabled{background:#c7c7dc;cursor:not-allowed}
+.btn.sec{background:#fff;color:#4f46e5;border:1.5px solid #4f46e5;margin-top:10px}
+.btn.sec:active{background:#f0efff}
+
+/* Price box */
+.price-box{background:#f8f9ff;border:1px solid #e0e0f0;border-radius:14px;padding:14px 16px;margin-bottom:18px}
+.p-row{display:flex;justify-content:space-between;font-size:13.5px;color:#6b7280;padding:4px 0}
+.p-row.tot{font-size:16px;color:#1a1a2e;font-weight:600;border-top:1px solid #e0e0f0;margin-top:8px;padding-top:10px}
+
+/* Webpay */
+.wp-box{border:1px solid #e0e0f0;border-radius:14px;overflow:hidden;margin-bottom:18px}
+.wp-head{background:#c8102e;padding:11px 16px;display:flex;align-items:center;gap:10px}
+.wp-logo{background:#fff;border-radius:5px;padding:3px 8px;font-size:13px;color:#c8102e;font-weight:800}
+.wp-head span{color:#fff;font-size:13px;font-weight:500}
+.wp-body{padding:14px}
+.card-mock{background:#1a1a2e;border-radius:12px;padding:16px;margin-bottom:14px}
+.chip{width:30px;height:22px;background:#d4af37;border-radius:5px;margin-bottom:14px}
+.cnum{font-size:16px;letter-spacing:3px;font-family:monospace;color:#fff;margin-bottom:10px}
+.cmeta{display:flex;justify-content:space-between;font-size:11px;color:#a0aec0}
+.card-row{display:flex;gap:10px}
+.card-row .field{flex:1}
+
+/* Loading */
+.loading-wrap{text-align:center;padding:20px 0}
+.load-bar{height:5px;background:#e0e0f0;border-radius:3px;overflow:hidden;margin:12px 0}
+.load-fill{height:100%;background:#c8102e;border-radius:3px;animation:lfill 2.5s ease forwards}
+@keyframes lfill{from{width:0}to{width:100%}}
+.load-msg{font-size:13px;color:#6b7280}
+
+/* Success */
+.success-wrap{text-align:center;padding:4px 0}
+.check-circle{width:64px;height:64px;border-radius:50%;background:#dcfce7;display:flex;align-items:center;justify-content:center;margin:0 auto 14px}
+.qr-box{background:#fff;border:2.5px solid #1a1a2e;border-radius:16px;padding:16px;display:inline-flex;margin:0 auto 14px}
+.qr-info{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:10px 14px;font-size:12.5px;color:#15803d;margin-bottom:14px;text-align:left;line-height:1.6}
+.sent-badge{display:inline-flex;align-items:center;gap:5px;background:#f0f0ff;border:1px solid #c7c7f0;border-radius:20px;padding:5px 14px;font-size:12.5px;color:#4f46e5;margin-bottom:14px}
+.instruct{font-size:13px;color:#6b7280;line-height:1.7;margin-bottom:6px}
+.order-tag{display:inline-block;background:#f1f5f9;border-radius:6px;padding:2px 8px;font-size:12px;color:#64748b;font-family:monospace}
+.m-tag-big{display:inline-flex;align-items:center;background:#f0efff;border-radius:8px;padding:4px 12px;font-size:13px;color:#4f46e5;font-weight:600;margin-bottom:14px}
+
+/* Safe area bottom */
+.safe-bottom{height:env(safe-area-inset-bottom,0)}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="header-inner">
+      <div class="logo">PMT · Plataforma de pagos</div>
+      <h1>Activación de máquina</h1>
+      <div class="header-sub">Lavandería · Sala A</div>
+    </div>
+    <div class="stepbar" id="stepbar"></div>
+  </div>
+  <div class="body" id="body"></div>
+  <div class="safe-bottom"></div>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+let cur=0,contactType='email',contactVal='',selectedMachine=null,processing=false;
+let orderId='PMT-'+Math.floor(Math.random()*90000+10000);
+
+const machines={
+  lavadora:[1,2,3,4,5,6,7,8].map(n=>({n})),
+  secadora:[1,2,3,4,5,6].map(n=>({n})),
+  prontopet:[1,2].map(n=>({n}))
+};
+const typeNames={lavadora:'Lavadora',secadora:'Secadora',prontopet:'ProntoPet'};
+const typeColors={
+  lavadora:{bg:'#e0e7ff',color:'#4f46e5',label:'L'},
+  secadora:{bg:'#fef3c7',color:'#b45309',label:'S'},
+  prontopet:{bg:'#fce7f3',color:'#be185d',label:'P'}
+};
+
+function setBar(active){
+  const labels=['Máquina','Contacto','Pago','Tu QR'];
+  $('stepbar').innerHTML=labels.map((l,i)=>`
+    <div class="step${i<active?' done':i===active?' active':''}">
+      <span class="n">${i<active?'✓':i+1}</span>${l}
+    </div>`).join('');
+}
+
+function buildGrid(type){
+  return machines[type].map(m=>{
+    const sel=selectedMachine&&selectedMachine.type===type&&selectedMachine.n===m.n;
+    return`<div class="m-btn${sel?' sel':''}" id="mb-${type}-${m.n}" onclick="pick('${type}',${m.n})">
+      <div class="m-num">${m.n}</div>
+      <div class="m-stat">${sel?'Elegida':'Libre'}</div>
+    </div>`;
+  }).join('');
+}
+
+function step0(){
+  setBar(0);
+  const secs=Object.keys(machines).map(t=>{
+    const c=typeColors[t];
+    return`<div class="m-section">
+      <div class="m-label">
+        <span class="m-icon" style="background:${c.bg};color:${c.color}">${c.label}</span>
+        ${typeNames[t]}
+      </div>
+      <div class="m-grid" id="grid-${t}">${buildGrid(t)}</div>
+    </div>`;
+  }).join('');
+  $('body').innerHTML=`
+    <h2>Elige tu máquina</h2>
+    <p class="desc">Selecciona el tipo y número de máquina que quieres usar.</p>
+    <div class="legend">
+      <div class="leg"><div class="leg-dot"></div>Disponible</div>
+      <div class="leg"><div class="leg-dot sel"></div>Seleccionada</div>
+    </div>
+    ${secs}
+    <button class="btn" id="btn0" onclick="go(1)" ${selectedMachine?'':'disabled'}>Continuar →</button>
+  `;
+}
+
+function pick(type,n){
+  selectedMachine={type,n};
+  document.querySelectorAll('.m-btn').forEach(b=>{
+    b.classList.remove('sel');
+    const s=b.querySelector('.m-stat');
+    if(s) s.textContent='Libre';
+  });
+  const el=$(`mb-${type}-${n}`);
+  if(el){el.classList.add('sel');el.querySelector('.m-stat').textContent='Elegida';}
+  const b=$('btn0');if(b)b.disabled=false;
+}
+
+function step1(){
+  setBar(1);
+  const ml=typeNames[selectedMachine.type]+' · N° '+selectedMachine.n;
+  $('body').innerHTML=`
+    <h2>Registra tu contacto</h2>
+    <div class="badge">${ml}</div>
+    <p class="desc">Recibirás el QR de activación al completar el pago.</p>
+    <div class="radio-group">
+      <div class="rbtn active" id="r-email" onclick="switchC('email')">✉ Correo</div>
+      <div class="rbtn" id="r-wa" onclick="switchC('wa')">💬 WhatsApp</div>
+    </div>
+    <div class="field">
+      <label id="clbl">Correo electrónico</label>
+      <input type="email" id="cinput" placeholder="tucorreo@ejemplo.com" autocomplete="email"/>
+      <div class="hint" id="chint">Te enviaremos el QR a esta dirección.</div>
+    </div>
+    <button class="btn" onclick="validateC()">Continuar →</button>
+    <button class="btn sec" onclick="go(0)">← Volver</button>
+  `;
+  setTimeout(()=>{const i=$('cinput');if(i)i.focus();},300);
+}
+
+function switchC(t){
+  contactType=t;
+  $('r-email').className='rbtn'+(t==='email'?' active':'');
+  $('r-wa').className='rbtn'+(t==='wa'?' active':'');
+  if(t==='email'){$('clbl').textContent='Correo electrónico';$('cinput').type='email';$('cinput').placeholder='tucorreo@ejemplo.com';$('chint').textContent='Te enviaremos el QR a esta dirección.';}
+  else{$('clbl').textContent='Número de WhatsApp';$('cinput').type='tel';$('cinput').placeholder='+56 9 1234 5678';$('chint').textContent='Te enviaremos el QR por WhatsApp.';}
+}
+
+function validateC(){
+  const v=$('cinput').value.trim();
+  if(!v){$('cinput').style.borderColor='#ef4444';$('cinput').focus();return;}
+  contactVal=v;go(2);
+}
+
+function step2(){
+  setBar(2);
+  const ml=typeNames[selectedMachine.type]+' · N° '+selectedMachine.n;
+  $('body').innerHTML=`
+    <h2>Resumen del pago</h2>
+    <div class="price-box">
+      <div class="p-row"><span>Activación · ${ml}</span><span>$2.990</span></div>
+      <div class="p-row"><span>Comisión</span><span>$0</span></div>
+      <div class="p-row tot"><span>Total a pagar</span><span>$2.990 CLP</span></div>
+    </div>
+    <div class="wp-box">
+      <div class="wp-head"><div class="wp-logo">Webpay</div><span>Plus · Pago seguro</span></div>
+      <div class="wp-body">
+        <div class="card-mock">
+          <div class="chip"></div>
+          <div class="cnum">•••• •••• •••• 4242</div>
+          <div class="cmeta"><span>TARJETA DE PRUEBA</span><span>12/27</span></div>
+        </div>
+        <div class="field">
+          <label>Número de tarjeta</label>
+          <input type="text" value="4111 1111 1111 1111" readonly/>
+        </div>
+        <div class="card-row">
+          <div class="field"><label>Vencimiento</label><input type="text" value="12/27" readonly/></div>
+          <div class="field"><label>CVV</label><input type="text" value="123" readonly/></div>
+        </div>
+      </div>
+    </div>
+    <button class="btn" onclick="processPay()">Pagar $2.990 CLP</button>
+    <button class="btn sec" onclick="go(1)">← Volver</button>
+  `;
+}
+
+function processPay(){
+  if(processing)return;processing=true;
+  $('body').innerHTML=`
+    <div class="loading-wrap">
+      <div style="width:56px;height:56px;border-radius:50%;background:#fff3f3;display:flex;align-items:center;justify-content:center;margin:0 auto 14px">
+        <div class="wp-logo" style="font-size:12px;background:#fff;border-radius:4px;padding:3px 7px;font-size:13px;color:#c8102e;font-weight:800">Webpay</div>
+      </div>
+      <h2 style="margin-bottom:6px">Procesando pago</h2>
+      <p class="desc">Verificando con Transbank...</p>
+      <div class="load-bar"><div class="load-fill"></div></div>
+      <p class="load-msg" id="pmsg">Conectando con el banco emisor...</p>
+    </div>
+  `;
+  const msgs=['Verificando tarjeta...','Autorizando transacción...','Pago aprobado ✓'];
+  let i=0;
+  const iv=setInterval(()=>{
+    if($('pmsg'))$('pmsg').textContent=msgs[i]||msgs[2];
+    i++;if(i>2){clearInterval(iv);setTimeout(()=>{processing=false;go(3);},500);}
+  },800);
+}
+
+function step3(){
+  setBar(3);
+  const ml=typeNames[selectedMachine.type]+' N° '+selectedMachine.n;
+  const cl=contactType==='email'?'correo electrónico':'WhatsApp';
+  $('body').innerHTML=`
+    <div class="success-wrap">
+      <div class="check-circle">
+        <svg fill="none" viewBox="0 0 24 24" stroke="#16a34a" stroke-width="2.5" width="32" height="32">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+        </svg>
+      </div>
+      <h2 style="margin-bottom:6px">¡Pago aprobado!</h2>
+      <p style="font-size:13px;color:#6b7280;margin-bottom:10px">Orden <span class="order-tag">${orderId}</span></p>
+      <div class="m-tag-big">${ml}</div>
+      <div class="qr-box">
+        <svg viewBox="0 0 40 40" width="180" height="180">
+          <rect width="40" height="40" fill="white"/>
+          <rect x="10" y="10" width="7" height="7" fill="none" stroke="#1a1a2e" stroke-width="1.5"/>
+          <rect x="13" y="13" width="1" height="1" fill="#1a1a2e"/>
+          <rect x="23" y="10" width="7" height="7" fill="none" stroke="#1a1a2e" stroke-width="1.5"/>
+          <rect x="26" y="13" width="1" height="1" fill="#1a1a2e"/>
+          <rect x="10" y="23" width="7" height="7" fill="none" stroke="#1a1a2e" stroke-width="1.5"/>
+          <rect x="13" y="26" width="1" height="1" fill="#1a1a2e"/>
+          <rect x="17" y="17" width="2" height="2" fill="#1a1a2e"/>
+          <rect x="21" y="17" width="2" height="2" fill="#1a1a2e"/>
+          <rect x="24" y="17" width="2" height="2" fill="#1a1a2e"/>
+          <rect x="17" y="21" width="2" height="2" fill="#1a1a2e"/>
+          <rect x="24" y="21" width="2" height="2" fill="#1a1a2e"/>
+          <rect x="17" y="24" width="2" height="2" fill="#1a1a2e"/>
+          <rect x="26" y="24" width="2" height="2" fill="#1a1a2e"/>
+          <rect x="20" y="27" width="2" height="2" fill="#1a1a2e"/>
+          <rect x="23" y="24" width="2" height="2" fill="#1a1a2e"/>
+        </svg>
+      </div>
+      <div class="sent-badge">✓ Enviado a tu ${cl}</div>
+      <div class="qr-info">
+        Este QR es válido solo para <strong>${ml}</strong>.<br>
+        Expira en <strong>10 minutos</strong>.<br>
+        Acércate a la máquina y muéstraselo al lector ESP32.
+      </div>
+      <p class="instruct" style="font-size:12px;color:#9ca3af">${contactVal}</p>
+    </div>
+    <button class="btn" style="margin-top:14px" onclick="reset()">Nueva activación</button>
+  `;
+}
+
+const steps=[step0,step1,step2,step3];
+function go(n){cur=Math.max(0,Math.min(3,n));window.scrollTo({top:0,behavior:'smooth'});steps[cur]();}
+function reset(){selectedMachine=null;contactVal='';orderId='PMT-'+Math.floor(Math.random()*90000+10000);go(0);}
+
+go(0);
+</script>
+</body>
+</html>
